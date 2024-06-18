@@ -30,6 +30,14 @@ fi
 # Get the current username
 USER_NAME=$(whoami)
 
+# Create the Docker group if it doesn't exist
+if ! getent group docker > /dev/null; then
+    sudo groupadd docker
+fi
+
+# Add the current user to the Docker group
+sudo usermod -aG docker $USER_NAME
+
 # Get the default shell for the user
 SHELL_PATH=$(getent passwd $USER_NAME | cut -d: -f7)
 
@@ -72,3 +80,4 @@ if ! grep -q "Start Docker daemon automatically" "$PROFILE_FILE"; then
 fi
 
 echo "Configuration complete. Please restart your terminal or run 'source $SHELL_RC' and 'source $PROFILE_FILE' to apply the changes."
+echo "You may also need to log out and back in for group changes to take effect."
